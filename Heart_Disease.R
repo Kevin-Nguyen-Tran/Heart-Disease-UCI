@@ -1,4 +1,6 @@
-#1) Loading packages, reading in data set, and reformatting.----------------------------------------------------------------------------------------------------------
+#=============================================================================================================================================================================================================================
+# PREREQUISITES, READING IN DATA SET, AND TIDYING DATA
+#=============================================================================================================================================================================================================================
 
 rm(list = ls()) #removes all variables stored previously in Environment (good habit to include)
 
@@ -65,6 +67,14 @@ ggplot(tidy_data, mapping = aes(x = sex, fill = status)) +
 
 ggplot(tidy_data, mapping = aes( x = status, y = age)) +
   geom_boxplot()
+
+tidy_data %>%
+  group_by(status) %>%
+  summarise(
+    average_age = mean(age),
+    min = min(age),
+    max = max(age)
+  )
 # We can see that the average age of an indivdual with heart disease is greater than that of someone without heart disease.
 # There is also less variability in age of those with heart dz vs those without
 # The youngest individual with heart dz, as shown as an outlier at 35 years old.
@@ -98,6 +108,14 @@ tidy_data %>%
   ggplot(tidy_data, mapping = aes(x = status, y = chol)) +
   geom_boxplot()
 
+tidy_data %>%
+  group_by(status) %>%
+  summarise(
+    average_chol = mean(chol),
+    min = min(chol),
+    max = max(chol)
+  )
+
 t.test(tidy_data$chol ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
 # interesting to see that cholesterol does not seem to be a good indicator of heart disease as there is not a significant difference in average cholestoral level between someone who has heart dz vs someone who doesn't
 
@@ -112,6 +130,7 @@ ggplot(tidy_data, aes(x = cp, fill = status)) +
 #As shown in the above plot, the majority of patients within the data set shows asymptomatic chest pains. Within this majority, most of which have heart disease.
 # This indicates that the majority of patients with heart disease are asymptomatic
 
+
 #=============================================================================================================================================================================================================================
 # RESTING BLOOD PRESSURE AND DISEASE STATUS
 #=============================================================================================================================================================================================================================
@@ -121,7 +140,7 @@ ggplot(tidy_data, aes(x = trestbps, fill = status)) +
   geom_histogram() +
   xlab("Resting Blood Pressure (mmHg)")
 # As you can see that the histogram is positively skewed due to the outliers of high rest bp greater than 180 mmHg (which both patients suffer from heart disease).
-# The average is within 120 mmHg and 140 mmHg. According to https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings, the normal systolic blood pressure is < 120 mmHg
+# According to https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings, the normal systolic blood pressure is < 120 mmHg
 
 tidy_data %>%
   group_by(status) %>%
@@ -130,6 +149,12 @@ tidy_data %>%
   )
 #As calculated above, the average resting bp of patients with the disease is 134 mmHg (which is greater than the average)
 # The average resting bp of patients without heart disease is 129 mmHg, which is still greater than the average bp.
+
+t.test(tidy_data$trestbps ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
+
+# The null hypothesis is: there is no difference in average systolic blood pressure between those with or without heart disease.
+# The p-value is 1.3% which is less than 5%, therefore we can reject our null hypothesis and with 95% confidence say there is a statistically significant difference between the average systolic blood pressure of those who have heart disease vs those who do not.
+# The confidence interval also does not include zero, therefore, it supports our rejection of the null.
 
 #==================================================================================================================================================================================================================================================================================================================================================================
 # MAXIMUM HEART RATE ACHIEVED PER PATIENT AND DISEASE STATUS
@@ -185,10 +210,10 @@ ggplot(probability_data, aes(x = rank, y = fitted.values, color = status)) +
   geom_point(alpha = 1, shape = 1, stroke = 2) +
   xlab("Rank") +
   ylab("Predicted Probability of Not Getting the Disease")
-# Due to how the data is represented with 0 indicating heart disearse and 1 indicating no heart dz, our plot will reflect this as shown above.
-# By plotting our predicted values to the known status of someone having the dz or not having the dz, we can confidently say that our generalized inear model
+# Due to how the data is represented with 0 indicating heart disease and 1 indicating no heart dz, our plot will reflect this as shown above.
+# By plotting our predicted values to the known status of someone having the dz or not having the dz, we can confidently say that our generalized linear model
 # predicts the relationship between variables accurately
-# Therefore, given a sample of the same variables, we can predict the likilihood of an individual not getting heart dz depending on their values
+# Therefore, given a sample of the same variables, we can predict the likelihood of an individual not getting heart dz depending on their values
 
 
 
