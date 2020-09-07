@@ -43,6 +43,9 @@ heart_data$status <- as.factor(heart_data$status)
 tidy_data <- heart_data %>%
   select(age:oldpeak, status) 
 
+#=============================================================================================================================================================================================================================
+# SEX AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
 
 ggplot(tidy_data, mapping = aes(x = sex)) +
   geom_bar()
@@ -54,6 +57,9 @@ ggplot(tidy_data, mapping = aes(x = sex, fill = status)) +
 # As you can see, within the females of this analysis, roughly 25% have heart disease
 # within the males of this analysis, roughly 60% have heart disease
 
+#=============================================================================================================================================================================================================================
+# AGE AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
 
 # We can look at the mean age of individual with and without the dz to see if they differ
 
@@ -82,6 +88,11 @@ t.test(tidy_data$age ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95,
 # The p-value is close to zero, therefore we can reject our null hypothesis and with 95% confidence say there is a statistically significant differnece between the average age of those who have heart dz vs those who do not.
 # The confidence interval also does not include zero, therefore, it supports our rejection of the null
 
+#=============================================================================================================================================================================================================================
+# CHOLESTORAL LEVELS AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
+
+
 tidy_data %>%
   group_by(status, chol) %>%
   ggplot(tidy_data, mapping = aes(x = status, y = chol)) +
@@ -90,12 +101,20 @@ tidy_data %>%
 t.test(tidy_data$chol ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
 # interesting to see that cholesterol does not seem to be a good indicator of heart disease as there is not a significant difference in average cholestoral level between someone who has heart dz vs someone who doesn't
 
+#=============================================================================================================================================================================================================================
+# CHEST PAIN AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
+
 #Chest pain and disease status
 ggplot(tidy_data, aes(x = cp, fill = status)) +
   geom_bar(position = "stack") +
   xlab("Increasing Chest Pain")
 #As shown in the above plot, the majority of patients within the data set shows asymptomatic chest pains. Within this majority, most of which have heart disease.
 # This indicates that the majority of patients with heart disease are asymptomatic
+
+#=============================================================================================================================================================================================================================
+# RESTING BLOOD PRESSURE AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
 
 # Histogram to show the resting blood pressure of patients with and without heart disease
 ggplot(tidy_data, aes(x = trestbps, fill = status)) +
@@ -111,6 +130,11 @@ tidy_data %>%
   )
 #As calculated above, the average resting bp of patients with the disease is 134 mmHg (which is greater than the average)
 # The average resting bp of patients without heart disease is 129 mmHg, which is still greater than the average bp.
+
+#==================================================================================================================================================================================================================================================================================================================================================================
+# MAXIMUM HEART RATE ACHIEVED PER PATIENT AND DISEASE STATUS
+#=============================================================================================================================================================================================================================
+
 
 # Now we can see what the relationship is between maximum heart rate achieved and disease status
 ggplot(tidy_data, aes(x = thalach, fill = status)) +
@@ -137,12 +161,16 @@ plot(thalach_age_model)
 # Second plot shows that if the residuals are normally distributed, the points should fall in a diagonal line as it does!
 # This, along with the p-values in the summary, show that our linear model effectively captures the relationship between the 3 variables!
 
+
+#=============================================================================================================================================================================================================================
+# LOGISTIC LINEAR REGRESSION - BINOMIAL AND DISEASE STATUS
+#====================================================================================================================================================================
+
 predicted <- glm(status ~ ., family = "binomial", data = tidy_data)
 # fitting a generalized linear model to our data to see if we can predict the status of a patient based on the confounding variables within the dataset
 summary(predicted)
 # As shown by the stars next to the p-values, there are variables that are statistically significant to predict the probability of dz
 # such as being male, the chest pains, and old peak.
-
 
 probability_data <- data.frame(fitted.values = predicted$fitted.values, status = tidy_data$status)
 
