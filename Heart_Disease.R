@@ -90,6 +90,53 @@ tidy_data %>%
 t.test(tidy_data$chol ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
 # interesting to see that cholesterol does not seem to be a good indicator of heart disease as there is not a significant difference in average cholestoral level between someone who has heart dz vs someone who doesn't
 
+#Chest pain and disease status
+ggplot(tidy_data, aes(x = cp, fill = status)) +
+  geom_bar(position = "stack") +
+  xlab("Increasing Chest Pain")
+#As shown in the above plot, the majority of patients within the data set shows asymptomatic chest pains. Within this majority, most of which have heart disease.
+# This indicates that the majority of patients with heart disease are asymptomatic
+
+# Histogram to show the resting blood pressure of patients with and without heart disease
+ggplot(tidy_data, aes(x = trestbps, fill = status)) +
+  geom_histogram() +
+  xlab("Resting Blood Pressure (mmHg)")
+# As you can see that the histogram is positively skewed due to the outliers of high rest bp greater than 180 mmHg (which both patients suffer from heart disease).
+# The average is within 120 mmHg and 140 mmHg. According to https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings, the normal systolic blood pressure is < 120 mmHg
+
+tidy_data %>%
+  group_by(status) %>%
+  summarise(
+    mean(trestbps)
+  )
+#As calculated above, the average resting bp of patients with the disease is 134 mmHg (which is greater than the average)
+# The average resting bp of patients without heart disease is 129 mmHg, which is still greater than the average bp.
+
+# Now we can see what the relationship is between maximum heart rate achieved and disease status
+ggplot(tidy_data, aes(x = thalach, fill = status)) +
+  geom_histogram() +
+  xlab("Maximum Heart Rate Achieved")
+# Upon researching the average maximum heart rate, mayoclinic <https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/exercise-intensity/art-20046887#:~:text=You%20can%20calculate%20your%20maximum,beat%20per%20minute%20during%20exercise.> suggests that it varies by age. To calculate average maximum heart rate: you will subtract your age from 220.
+# This implies that the older you are the lower your maximum heart rate is (on average).
+# Therefore, we will look at a plot that includes age as a variable and see what it implies.
+
+ggplot(tidy_data, aes(x = age, y = thalach, color = status)) +
+  geom_point() +
+  geom_smooth(se = FALSE, size = 2) +
+  xlab("Age") +
+  ylab("Maximum Heart Rate Achieved")
+# As seen in the above graph, this is true for those without heart disease. As age increases, the maximum heart rate achieved decreases
+# Within patients with heart disease the maximum heart rate achieved remains consistent around 150 beats per minute.
+
+thalach_age_model <- lm(tidy_data$thalach ~ tidy_data$age + tidy_data$status)
+summary(thalach_age_model)
+plot(thalach_age_model)
+# this function above is the base R, 4 built-in regression diagnostic plots
+# The first plot has a line that is relatively flat and the relationship between the fitted values and residual is cloud shaped
+# this shows linearity between the 3 variabels
+# Second plot shows that if the residuals are normally distributed, the points should fall in a diagonal line as it does!
+# This, along with the p-values in the summary, show that our linear model effectively captures the relationship between the 3 variables!
+
 predicted <- glm(status ~ ., family = "binomial", data = tidy_data)
 # fitting a generalized linear model to our data to see if we can predict the status of a patient based on the confounding variables within the dataset
 summary(predicted)
@@ -111,6 +158,9 @@ ggplot(probability_data, aes(x = rank, y = fitted.values, color = status)) +
   xlab("Rank") +
   ylab("Predicted Probability of Not Getting the Disease")
 # Due to how the data is represented with 0 indicating heart disearse and 1 indicating no heart dz, our plot will reflect this as shown above.
+# By plotting our predicted values to the known status of someone having the dz or not having the dz, we can confidently say that our generalized inear model
+# predicts the relationship between variables accurately
+# Therefore, given a sample of the same variables, we can predict the likilihood of an individual not getting heart dz depending on their values
 
 
 
