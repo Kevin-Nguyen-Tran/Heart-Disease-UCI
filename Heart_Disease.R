@@ -14,7 +14,7 @@ data <- read.csv("C:/Users/Kevin/Desktop/Heart-Disease-UCI/datasets_33180_43520_
 
 heart_data <- as_tibble(data)
 
-heart_data <- rename(heart_data, age = Ã¯..age)
+heart_data <- rename(heart_data, age = ï..age)
 
 heart_data <- heart_data %>%
   mutate(status = target)

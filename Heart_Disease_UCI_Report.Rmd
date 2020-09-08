@@ -50,7 +50,14 @@ We will begin our analysis by determining the prevalence of each respective sex 
 
 ```{r}
 ggplot(tidy_data, mapping = aes(x = sex)) +
-  geom_bar()
+  geom_bar() +
+  labs(x = "Gender", 
+       y = "Number of Individuals",
+       title = "Amount of Males and Females within the Data Set",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 * As shown in the above bar chart, there are more males than females within this data set.
@@ -58,7 +65,14 @@ ggplot(tidy_data, mapping = aes(x = sex)) +
 **Let's take a look at the relationship between sex (male vs female) and disease status:**
 ```{r}
 ggplot(tidy_data, mapping = aes(x = sex, fill = status)) +
-  geom_bar(position = "fill")
+  geom_bar(position = "fill") +
+  labs(x = "Gender", 
+       y = "Proportion",
+       title = "Proportion of Individuals With and Without Heart Disease",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 * Within the females of this analysis, roughly 25% have heart disease and within the males of this analysis, roughly 60% have heart disease.
@@ -74,7 +88,14 @@ According to the *National Institute on Aging*, adults that are 65 years and old
 
 ```{r, message=FALSE}
 ggplot(tidy_data, mapping = aes( x = status, y = age)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(x = "Disease Status", 
+       y = "Age",
+       title = "Older Age Correlated with Heart Disease",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 
 average_age_dz <- tidy_data %>%
   group_by(status) %>%
@@ -140,7 +161,14 @@ The bad cholesterol that causes blockage of the arteries is called Low-Density L
 tidy_data %>%
   group_by(status, chol) %>%
   ggplot(tidy_data, mapping = aes(x = status, y = chol)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(x = "Disease Status", 
+       y = "Serum Cholesterol Level (mg/dL)",
+       title = "Similar Cholesterol Levels Despite Heart Disease",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 
 average_chol_status <- tidy_data %>%
   group_by(status) %>%
@@ -187,7 +215,13 @@ Chest pain, also known as Angina, is not a disease but a symptom of a potential 
 ```{r}
 ggplot(tidy_data, aes(x = cp, fill = status)) +
   geom_bar(position = "stack") +
-  xlab("Chest Pain Type")
+  labs(x = "Chest Pain Type", 
+       y = "Number of Individuals",
+       title = "Large Majority of Heart Disease Patients are Asymptomatic",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 * Value 0: Asymptomatic
@@ -201,6 +235,8 @@ ggplot(tidy_data, aes(x = cp, fill = status)) +
 As shown in the above plot, the majority of patients within the data set are asymptomatic. Within this majority, most of which have heart disease. This indicates that the majority of patients with heart disease are asymptomatic. 
 
 According to *heart.org*, "Not all chest pain is a sign of heart disease." There are other conditions that can cause chest pains, such as, "Pulmonary Embolism, Aortic Dissection, Lung infection, Aortic Stenosis, and etc.
+
+<https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain>
 
 **Therefore, as seen above, we can assume that chest pain might not be a great indicator for heart disease as well.**
 
@@ -219,7 +255,13 @@ The normal ranges of systolic blood pressure is less than 120 mm Hg. Systolic bl
 ```{r, message=FALSE}
 ggplot(tidy_data, aes(x = trestbps, fill = status)) +
   geom_histogram() +
-  xlab("Resting Blood Pressure (mmHg)")
+  labs(x = "Resting Blood Pressure (mmHg)", 
+       y = "Number of Individuals",
+       title = "Majority of Heart Disease Patients have Elevated Blood Pressures",
+       subtitle = "Blood Pressure >120 mmHg",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 * As you can see, the histogram is positively skewed due to the outliers of high resting blood pressure greater than 180 mmHg (which both patients suffer from heart disease).
@@ -256,7 +298,13 @@ t.test(tidy_data$trestbps ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 
 ```{r, message=FALSE}
 ggplot(tidy_data, aes(x = thalach, fill = status)) +
   geom_histogram() +
-  xlab("Maximum Heart Rate Achieved")
+  labs(x = "Maximum Heart Rate Achieved (bpm)", 
+       y = "Number of Individuals",
+       title = "Maximum Heart Rate Achieved per Patient",
+       subtitle = "Heart Disease UCI",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 ```
 
 Upon researching the average maximum heart rate, *mayoclinic.com* <https://www.mayoclinic.org/healthy-lifestyle/fitness/in-depth/exercise-intensity/art-20046887#:~:text=You%20can%20calculate%20your%20maximum,beat%20per%20minute%20during%20exercise.> suggests that it varies by age. To calculate the average maximum heart rate: you will subtract your age from 220.
@@ -268,8 +316,13 @@ Therefore, we will look at a plot that includes age as a variable and see what i
 ggplot(tidy_data, aes(x = age, y = thalach, color = status)) +
   geom_point() +
   geom_smooth(se = FALSE, size = 2) +
-  xlab("Age") +
-  ylab("Maximum Heart Rate Achieved")
+  labs(x = "Age", 
+       y = "Maximum Heart Rate Achieved",
+       title = "As Age Increases, Maximum Heart Rate Achieved Decreases",
+       subtitle = "Heart Disease Patients are Relatively Flat",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 
 ```
 
@@ -325,8 +378,13 @@ probability_data <- probability_data %>%
 
 ggplot(probability_data, aes(x = rank, y = fitted.values, color = status)) +
   geom_point(alpha = 1, shape = 1, stroke = 2) +
-  xlab("Rank") +
-  ylab("Predicted Probability of Not Getting the Disease")
+  labs(x = "Rank", 
+       y = "Predicted Probability of Not Getting Heart Disease",
+       title = "Predicted Probability of Heart Disease",
+       subtitle = "Closer to Zero, the Higher the Probability of Getting Heart Disease",
+       caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
 
 ```
 
