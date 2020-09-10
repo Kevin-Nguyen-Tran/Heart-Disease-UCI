@@ -43,7 +43,23 @@ tidy_data <- heart_data %>% # main data set used throughout the data analysis
 
 ## Abstract
 
-WORK ON AFTER CODE CHUNKS AND ORGANIZATION IS FINALIZED
+This analysis deals with exploring disease status and understanding the relationship it has with a multitude of different variables and factors. Specifically, we aim for a better understanding of how sex (male and female), age, serum cholesterol levels, chest pain, blood pressure (bp), and maximum heart rate (hr) plays a part in the prevalence of heart disease. The following variables will be analyzed individually and then used to create a generalized binomial linear model to predict the probability of not having heart disease. The data represented in this analysis can be found at [archive.ics.uci.edu](https://archive.ics.uci.edu/ml/datasets/heart+Disease).
+
+**The data analysis will be broken down by the following sections:**
+
+* Sex and Disease Status
+
+* Age and Disease Status
+
+* Serum Cholesterol Levels and Disease Status
+
+* Chest Pain and Disease Status
+
+* Resting Blood Pressure and Disease Status
+
+* Maximum Heart Rate Achieved per Patient and Disease Status
+
+* Logistic Linear Regression - Binomial and Disease Status Predictions
 
 ## Sex and Disease Status
 
@@ -61,9 +77,9 @@ ggplot(tidy_data, mapping = aes(x = sex)) +
         plot.subtitle = element_text(hjust = 0.5))
 ```
 
-* As shown in the above bar chart, there are more males than females within this data set.
+* As shown in the above bar chart, there are more than double the number of males than females within this data set.
 
-**Let's take a look at the relationship between sex (male vs female) and disease status:**
+**Let's explore the proportion of these genders and see the prevalence of heart disease among them:**
 ```{r}
 ggplot(tidy_data, mapping = aes(x = sex, fill = status)) +
   geom_bar(position = "fill") +
@@ -92,7 +108,7 @@ ggplot(tidy_data, mapping = aes( x = status, y = age)) +
   geom_boxplot() +
   labs(x = "Disease Status", 
        y = "Age",
-       title = "Older Age Correlated with Heart Disease",
+       title = "Older Age is Correlated with Heart Disease",
        subtitle = "Heart Disease UCI",
        caption = "Source: https://archive.ics.uci.edu/ml/datasets/heart+Disease") +
   theme(plot.title = element_text(hjust = 0.5),
@@ -109,12 +125,14 @@ average_age_dz <- tidy_data %>%
 knitr::kable(average_age_dz, digits = 2)
 ```
 
-* Within our data set, the average age of an individual with heart disease is 56.6 years old with the youngest being 35 years old and the oldest being 77 years old.
+* Within our data set, the average age of an individual with heart disease is 56.6 years old, with the youngest being 35 years old and the oldest being 77 years old.
 
-* The box plot above shows that the average age of an individual with heart disease is greater than that of someone without heart disease and there is less variability in age of those with heart disease than those without heart disease.
+* The box plot above shows that the average age of an individual with heart disease is greater than that of someone without heart disease and there is less variability in the age of those with heart disease than those without heart disease.
 
 **Now we can run a t-test to see if there is a statistically significant difference between the average age of patients with heart disease vs without heart disease** 
+
 *Keep in mind, our null hypothesis is equal to zero, the alternative is two.sided, we want a 95% confidence interval, the variance is not equal and we have independent populations.*
+
 ```{r}
 t.test(tidy_data$age ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
 ```
@@ -147,13 +165,13 @@ knitr::kable(age_sex_dz, digits = 2)
 
 * The oldest male with heart disease is 77 years old and the oldest female with heart disease is 66 years old.
 
-This analysis is aligned with the claims stated above from [@maas2010gender]. The average age of males with heart disease was on average 3 years less than that of a female, which supports the claim that men tend to develop coronary artery disease earlier in life. If we look at the youngest male to develop heart disease, they are 8 years younger than the youngest female with heart disease in this data set. Which supports the claim that heart disease "develops 7-10 years later in women than in men."
+This analysis is aligned with the claims stated above from [@maas2010gender]. The average age of males with heart disease was on average 3 years less than that of a female, which supports the claim that men tend to develop coronary artery disease earlier in life. If we look at the youngest male to develop heart disease, they are 8 years younger than the youngest female with heart disease in this data set. This supports the claim that heart disease "develops 7-10 years later in women than in men."
 
-## Cholestoral Levels and Disease Status
+## Cholesterol Levels and Disease Status
 
-The research by [@elshourbagy2014cholesterol] explains that atherosclerosis is an inflammatory condition that can result from a multitude of risk factors. Some known factors that can contribute to its development are high levels of Low-Density Lipoprotein (LDL) and low levels of High-Density Lipoprotein (HDL). The reason is because LDL is a pro-inflammatory and HDL is an anti-inflammatory. 
+The research by [@elshourbagy2014cholesterol] explains that atherosclerosis is an inflammatory condition that can result from a multitude of risk factors. Some known factors that can contribute to its development are high levels of Low-Density Lipoprotein (LDL) and low levels of High-Density Lipoprotein (HDL). The reason is that LDL is a pro-inflammatory and HDL is an anti-inflammatory. 
 
-Because atherosclerosis is a leading cause of cardiovasular disease due to dyslipidemia (abnormal levels of lipids in the blood (LDL/HDL)) [@elshourbagy2014cholesterol], we will analyze the cholesterol data of our patients. 
+Because atherosclerosis is a leading cause of cardiovascular disease due to dyslipidemia (abnormal levels of lipids in the blood (LDL/HDL)) [@elshourbagy2014cholesterol], we will analyze the cholesterol data of our patients. 
 
 **Specifically, we will take a look at our data set and see what the serum cholesterol levels are compared to the normal range of serum cholesterol:**
 ```{r, message=FALSE, error=FALSE}
@@ -193,7 +211,7 @@ According to [WebMD](https://www.webmd.com/cholesterol-management/understanding-
 Therefore, both of the average serum cholesterol levels of those with and without heart disease fall within the "High of Serum Cholesterol Level."
 
 
-**Although, they are both above the health range, are the two averages significantly different?**
+**Although, they are both above the healthy range, are the two averages significantly different?**
 ```{r}
 t.test(tidy_data$chol ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
 ```
@@ -203,13 +221,13 @@ t.test(tidy_data$chol ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95
 
 * Also since the 95% confidence interval includes zero, it supports our failure to reject the null hypothesis.
 
-**Therefore, there is no statistically significant difference between the two cholesterol levels.**
+**Therefore, there is no statistically significant difference between the two cholesterol levels regardless of the presence or absence of heart disease.**
 
 It is interesting to see that cholesterol level is not a good indicator of heart disease within this data set despite the known implications from the above publications.
 
 ## Chest Pain and Disease Status
 
-Chest pain, also known as Angina, is not a disease but a symptom of a potential underlying heart problems. There are many different variations of Angina, however, we will be following the below factors for our analysis:
+Chest pain, also known as Angina, is not a disease but a symptom of potential underlying heart problems. There are many different variations of Angina, however, we will be following the below key for our analysis:
 
 ```{r}
 ggplot(tidy_data, aes(x = cp, fill = status)) +
@@ -231,11 +249,11 @@ ggplot(tidy_data, aes(x = cp, fill = status)) +
 
 * Value 3: Typical Angina
 
-As shown in the above plot, the majority of patients within the data set are asymptomatic. Within this majority, most of which have heart disease. This indicates that the majority of patients with heart disease are asymptomatic. 
+As shown in the above plot, the majority of patients within the data set are asymptomatic. Within this majority, most of them have heart disease. This indicates that the majority of patients with heart disease are asymptomatic. 
 
-According to [heart.org](https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain), *"not all chest pain is a sign of heart disease."* There are other conditions that can cause chest pains, such as, Pulmonary Embolism, Aortic Dissection, Lung infection, Aortic Stenosis, and etc.
+According to [heart.org](https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain), *"not all chest pain is a sign of heart disease."* There are other conditions that can cause chest pains, such as, Pulmonary Embolism, Aortic Dissection, Lung infection, Aortic Stenosis, etc.
 
-**Therefore, as seen above, we can assume that chest pain might not be a great indicator for heart disease as well within this data set.**
+**Therefore, we can assume that chest pain might not be a great indicator for heart disease as well within this data set.**
 
 ## Resting Blood Pressure and Disease Status
 
@@ -243,7 +261,7 @@ As stated in [MedicalNewsToday](https://www.medicalnewstoday.com/articles/325861
 
 * We will focus on the normal ranges of systolic blood pressure since diastolic blood pressure is out of the scope of this data analysis.
 
-The [heart.org](https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain) states that normal ranges of systolic blood pressure is less than 120 mm Hg. Systolic blood pressure that is consistently greater than 130 mmHg categorizes the patient as hypertensive.
+The [heart.org](https://www.heart.org/en/health-topics/heart-attack/angina-chest-pain) states that normal range of systolic blood pressure is less than 120 mmHg. Systolic blood pressure that is consistently greater than 130 mmHg categorizes the patient as hypertensive.
 
 
 **Below is a Histogram to show the resting systolic blood pressure of patients with and without heart disease:**
@@ -276,7 +294,7 @@ knitr::kable(trestbps_table, digits = 0)
 
 * The average resting blood pressure of patients without heart disease is 129 mmHg, which is still greater than the healthy range but is less than a hypertensive patient.
 
-**Can we claim that the average blood pressures between those with or without the heart disease is significantly different?**
+**Can we claim that the average blood pressure between those with or without heart disease is significantly different?**
 
 ```{r}
 t.test(tidy_data$trestbps ~ tidy_data$status, mu = 0, alt = "two.sided", conf = 0.95, var.eq = FALSE, paired = FALSE)
@@ -303,7 +321,7 @@ ggplot(tidy_data, aes(x = thalach, fill = status)) +
         plot.subtitle = element_text(hjust = 0.5))
 ```
 
-Upon researching the average maximum heart rate, there are many different age predicted maximal heart rate (APMHR) equations that can be used. The most commonly used APMHR equation is HRmax = 220 - Age (Fox). This equation is limited by predictive accuracy and has a reported standard deviation of 10 - 12 bpm, however, "it is still used in clinical settings and published in resources by well-established organizations in the field." [@shookster2020accuracy] Therefore, we will utilize this equation as a reference while analyzing our data.
+Upon researching the average maximum heart rate, there are many different age-predicted maximal heart rate (APMHR) equations that can be used. The most commonly used APMHR equation is HRmax = 220 - Age (Fox). This equation is limited by predictive accuracy and has a reported standard deviation of 10 - 12 bpm, however, "it is still used in clinical settings and published in resources by well-established organizations in the field." [@shookster2020accuracy] Therefore, we will utilize this equation as a reference while analyzing our data.
 
 * This implies that the older you are, the lower your maximum heart rate is (on average).
 Therefore, we will look at a plot that includes age as a variable and see what it implies within our data.
@@ -324,12 +342,17 @@ ggplot(tidy_data, aes(x = age, y = thalach, color = status)) +
 
 * In patients without heart disease, as age increases, the maximum heart rate achieved decreases.
 
-* Within patients with heart disease the maximum heart rate achieved remains consistent around 140-150 beats per minute regardless of age.
+* Within patients with heart disease, the maximum heart rate achieved remains consistent around 140-150 beats per minute regardless of age.
 
 **We will now look at a linear model to confirm the relationship between heart rate, age, and disease status:**
-```{r}
+```{r, message = FALSE}
 thalach_age_model <- lm(tidy_data$thalach ~ tidy_data$age + tidy_data$status)
 summary(thalach_age_model)
+```
+
+We can see in the summary of the linear model that there is a negative slope (-0.8063) for age in correspondence to a positive maximum heart rate achieved (vice versa). This supports the expected relationship that as age increases, the maximum heart rate achieved will decrease (more specifically, every change in age is associated with a negative change in maximum heart rate).
+
+```{r, message = FALSE}
 plot(thalach_age_model)
 ```
 
@@ -337,13 +360,13 @@ The plot function above is Base R's 4 built-in regression diagnostic plots:
 
 *We will focus on the first two regression diagnostic plots*
 
-* The first plot shows a line that is relatively flat and the relationship between the fitted values and residuals is cloud shaped. This implies linearity between the three variables of age, maximum heart rate achieved, and disease status.
+* The first plot shows a relatively flat line and the relationship between the fitted values and residuals is cloud-shaped. This implies linearity between the three variables of age, maximum heart rate achieved, and disease status.
 
 * The second plot shows that if the residuals are normally distributed, the points should fall in a diagonal line as it does!
 
 *This, along with the p-values in the summary, shows that our linear model effectively captures the relationship between the three variables!*
 
-## Logistic Linear Regression - Binomial and Disease Status
+## Logistic Linear Regression - Binomial and Disease Status Predictions
 
 We will now fit a generalized linear regression model to our data to see if we can predict the status of a patient based on the variables within the data set.
 
@@ -351,11 +374,12 @@ We will now fit a generalized linear regression model to our data to see if we c
 predicted <- glm(status ~ ., family = "binomial", data = tidy_data)
 summary(predicted)
 ```
-As shown by the stars next to the p-values, there are variables that are statistically significant to predict the probability of disease status
+As shown by the stars next to the p-values, some variables are statistically significant to predict the probability of disease status.
 
-* Such as being male, chest pains, etc.
+* Since the probabilities reflect **NOT** getting heart disease, the negative estimates with small p-values are good predictors **for** getting heart disease.
+  * Such as being male, having exercise-induced angina (exang1), and having ST depression induced by exercise (oldpeak).
 
-Because we are using a binomial generalized linear model, we are trying to predict the probability of **NOT** getting heart disease due to zero representing heart disease and one representing no heart disease.
+Because we are using a binomial generalized linear model, we are trying to predict the probability of **NOT** getting heart disease since zero represents heart disease and one represents no heart disease.
 
 * *If the values were flipped and heart disease was represented by one and no heart disease was represented by zero, the binomial generalized linear model would predict the probability of getting heart disease.*
 
@@ -390,7 +414,13 @@ By plotting our predicted values to the known status of someone having the disea
 
 ## Conclusion
 
-WORK ON AFTER REPORT IS FINALIZED
+Heart disease is the leading cause of death currently in the United States. Understanding the correlation between different variables and the disease itself can lead to a reduction in prevalence. As shown in this analysis, there are variables such as sex, age, and resting blood pressure that are supported by claims from literature to correspond with having heart disease. There are also other variables within our data, such as serum cholesterol levels, chest pains, and maximum heart rate achieved, that did not show correspondence with having heart disease despite common knowledge.
+
+As shown in the statistical analysis, the generalized linear model was used to predict the probability of not having heart disease. This specifically looked at each component within the variables and specified them as either being a good predictor (p-value of less than 5%) or not a good predictor (p-value of greater than 5%). Since we are interested in predicting the probability of having heart disease, we will focus on the negative effect sizes as they convey heart disease prevalence. The results show that sex is a good predictor of heart disease prevalence (as notated by the big negative effect size and small p-value). There are other factors such as exercise-induced angina and ST depression induced by exercise relative to rest that were categorized as good predictors, however, their effect size were relatively small. Therefore, further analysis will be needed to explore other potential risk factors that can contribute to predicting heart disease that is limited by this data set.
+
+**Opportunities for further analysis could be researching the following:** 
+
+* The effect of exercise on known risk factors in those with and without heart disease
 
 
 ## Bibliography
